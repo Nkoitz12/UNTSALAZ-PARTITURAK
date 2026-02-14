@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ERREPERTORIOA</title>
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui;
+      background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+      color:#fff;
+      padding:28px 18px;
+    }
+    .wrap{max-width:900px;margin:0 auto;}
+    .top{
+      display:flex; gap:14px; align-items:center; justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+    .title{display:flex; align-items:center; gap:12px;}
+    .title h1{margin:0;font-size:26px;letter-spacing:1px}
+    .pill{
+      display:inline-block;
+      padding:8px 12px;border-radius:999px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.18);
+      font-weight:700;
+    }
+    .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    a.btn{
+      text-decoration:none; color:#203a43;
+      background:#fff; font-weight:800;
+      padding:10px 14px; border-radius:12px;
+      display:inline-block;
+      transition:.2s;
+    }
+    a.btn:hover{transform:scale(1.03)}
+    input{
+      padding:10px 12px;border-radius:12px;border:0; outline:none;
+      min-width:240px;
+    }
+    .card{
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:18px;
+      overflow:hidden;
+    }
+    .row{
+      display:flex; justify-content:space-between; align-items:center;
+      gap:12px;
+      padding:14px 14px;
+      border-top:1px solid rgba(255,255,255,.12);
+    }
+    .row:first-child{border-top:0}
+    .name{font-weight:800}
+    .meta{opacity:.85; font-size:13px}
+    .right{display:flex; gap:10px; align-items:center}
+    a.open{
+      color:#fff; text-decoration:none; font-weight:800;
+      padding:8px 12px; border-radius:12px;
+      background:rgba(0,210,255,.18);
+      border:1px solid rgba(0,210,255,.35);
+      transition:.2s;
+      white-space:nowrap;
+    }
+    a.open:hover{transform:scale(1.03)}
+    .muted{opacity:.8}
+    .footer{margin-top:14px;opacity:.75;font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="title">
+        <div class="pill" id="folderPill">Carpeta</div>
+        <h1 id="folderTitle">Cargando…</h1>
+      </div>
+
+      <div class="actions">
+        <a class="btn" href="../../">⬅ Volver al inicio</a>
+        <input id="q" type="text" placeholder="Buscar PDF..." />
+      </div>
+    </div>
+
+    <div class="card" id="list">
+      <div class="row"><div class="muted">Cargando lista…</div></div>
+    </div>
+
+    <div class="footer" id="foot"></div>
+  </div>
+
+<script>
+(async () => {
+  const OWNER = "Nkoitz12";
+  const REPO  = "UNTSALAZ-PARTITURAK";
+
+  // Detecta la carpeta actual desde la URL: /ERREPERTORIOA/01-.../
+  const parts = location.pathname.split("/").filter(Boolean);
+  const errepIndex = parts.indexOf("ERREPERTORIOA");
+  const folder = (errepIndex >= 0 && parts[errepIndex + 1]) ? parts[errepIndex + 1] : "";
+
+  const folderNice = folder.replace(/-/g," ");
+  document.getElementById("folderTitle").textContent = folderNice || "ERREPERTORIOA";
+  document.getElementById("folderPill").textContent = "ERREPERTORIOA";
+
+  const apiUrl = `https://api.github.com/repos/${OWNER}/${REPO}/contents/ERREPERTORIOA/${folder}`;
+
+  const listEl = document.getElementById("list");
+  const footEl = document.getElementById("foot");
+  const qEl = document.getElementById("q");
+
+  function humanSize(bytes){
+    if(!bytes && bytes !== 0) return "";
+    const units=["B","KB","MB","GB"];
+    let i=0, n=bytes;
+    while(n>=1024 && i<units.length-1){ n/=1024; i++; }
+    return `${n.toFixed(i===0?0:1)} ${units[i]}`;
+  }
+
+  function render(items){
+    listEl.innerHTML = "";
+    if(items.length === 0){
+      listEl.innerHTML = `<div class="row"><div class="muted">No hay PDFs todavía en esta carpeta.</div></div>`;
+      return;
+    }
+
+    for(const it of items){
+      const fileUrl = it.download_url; // link directo al PDF
+      const nameNice = it.name.replace(/\.pdf$/i,"").replace(/[-_]+/g," ");
+      const size = humanSize(it.size);
+
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div>
+          <div class="name">${nameNice}</div>
+          <div class="meta">${it.name} ${size ? "• " + size : ""}</div>
+        </div>
+        <div class="right">
+          <a class="open" href="${fileUrl}" target="_blank" rel="noopener">Abrir PDF</a>
+        </div>
+      `;
+      listEl.appendChild(row);
+    }
+  }
+
+  try{
+    const res = await fetch(apiUrl);
+    if(!res.ok
+       
