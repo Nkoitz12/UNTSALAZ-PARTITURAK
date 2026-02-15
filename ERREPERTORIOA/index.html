@@ -3,31 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ERREPERTORIOA</title>
+<title>UNTSALAZ PARTITURAK</title>
 
 <style>
 body{
   margin:0;
   font-family:system-ui,Arial;
-  background:linear-gradient(135deg,#1c7ed6,#0ca678);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  height:100vh;
+  background:#111827;
   color:white;
 }
 
-h1{
-  margin-bottom:40px;
+header{
+  padding:40px 20px;
+  text-align:center;
 }
 
-.menu{
+h1{
+  margin:0;
+  font-size:28px;
+  letter-spacing:2px;
+}
+
+main{
+  max-width:1000px;
+  margin:0 auto 60px auto;
+  padding:0 20px;
+}
+
+.grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-  width:90%;
-  max-width:900px;
+  gap:18px;
 }
 
 .btn{
@@ -36,27 +42,25 @@ h1{
   padding:18px;
   border-radius:16px;
   text-decoration:none;
+  font-weight:600;
   text-align:center;
-  font-weight:bold;
   transition:0.2s;
+  box-shadow:0 8px 18px rgba(0,0,0,0.25);
 }
 
 .btn:hover{
-  transform:scale(1.05);
+  transform:translateY(-4px);
 }
 </style>
 </head>
 
 <body>
 
+<header>
 <h1>UNTSALAZ PARTITURAK</h1>
+</header>
 
-<div class="menu">
-  <a class="btn" href="./01-Murgak-Kalejirak/">🎵 Murgak - Kalejirak</a>
-  <a class="btn" href="./02-Dianak/">🥁 Dianak</a>
-  <a class="btn" href="./03-Erraldoien-Kalejirak/">👑 Erraldoien Kalejirak</a>
-  <a class="btn" href="./04-Bestelakoak/">🎶 Bestelakoak</a>
-</div>
+<main>
+<div class="grid">
 
-</body>
-</html>
+<a class="btn" href="./01-Murgak-Kalejirak/">
