@@ -1,117 +1,97 @@
 <!DOCTYPE html>
 <html lang="eu">
 <head>
-  <meta charset="UTF-8">
-  <title>UNTSALAZ PARTITURAK</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Murgak - Kalejirak</title>
 
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: white;
-      text-align: center;
-    }
+<style>
+body{
+  font-family: 'Segoe UI', sans-serif;
+  margin:0;
+  background: linear-gradient(135deg,#141e30,#243b55);
+  color:white;
+  text-align:center;
+}
 
-    header {
-      padding: 40px 20px;
-      font-size: 32px;
-      font-weight: bold;
-      letter-spacing: 2px;
-    }
+header{
+  padding:25px;
+  font-size:26px;
+  font-weight:bold;
+}
 
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 25px;
-      padding: 30px;
-      max-width: 1100px;
-      margin: auto;
-    }
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
 
-    .btn {
-      background: linear-gradient(145deg, #00c6ff, #0072ff);
-      padding: 25px;
-      border-radius: 18px;
-      text-decoration: none;
-      color: white;
-      font-size: 20px;
-      font-weight: 600;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      transition: 0.3s;
-    }
+.pdf{
+  display:block;
+  margin:12px auto;
+  padding:15px;
+  width:80%;
+  max-width:400px;
+  background:linear-gradient(145deg,#00c6ff,#0072ff);
+  border-radius:12px;
+  text-decoration:none;
+  color:white;
+  font-weight:bold;
+  transition:0.3s;
+}
 
-    .btn:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 25px rgba(0,0,0,0.4);
-    }
+.pdf:hover{
+  transform:scale(1.05);
+}
 
-    /* BOTÓN FLECHA ARRIBA */
-    #scrollTopBtn {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: #00c6ff;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 55px;
-      height: 55px;
-      font-size: 26px;
-      cursor: pointer;
-      display: none;
-      box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-      transition: 0.3s;
-    }
-
-    #scrollTopBtn:hover {
-      background: #0072ff;
-      transform: scale(1.1);
-    }
-
-    footer {
-      padding: 30px;
-      opacity: 0.7;
-      font-size: 14px;
-    }
-
-  </style>
+.back{
+  display:inline-block;
+  margin-top:30px;
+  color:white;
+  opacity:0.7;
+  text-decoration:none;
+}
+</style>
 </head>
 
 <body>
 
-<header>
-  UNTSALAZ PARTITURAK
-</header>
+<header>🎺 Murgak - Kalejirak</header>
 
-<div class="container">
-  <a class="btn" href="ERREPERTORIOA/01.-%20Murgak-Kalejirak/">🎺 Murgak - Kalejirak</a>
-  <a class="btn" href="ERREPERTORIOA/02.-%20Dianak/">🥁 Dianak</a>
-  <a class="btn" href="ERREPERTORIOA/03.-%20Erraldoien%20Kalejirak/">👑 Erraldoien Kalejirak</a>
-  <a class="btn" href="ERREPERTORIOA/04.-%20Bestelakoak/">🎶 Bestelakoak</a>
+<div class="container" id="pdf-list">
+Cargando PDFs...
 </div>
 
-<button onclick="topFunction()" id="scrollTopBtn">↑</button>
-
-<footer>
-  © 2026 Untsalaz Gaiteroak
-</footer>
+<a class="back" href="../">⬅ Volver</a>
 
 <script>
-  let mybutton = document.getElementById("scrollTopBtn");
+fetch(window.location.href)
+.then(response => response.text())
+.then(text => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, "text/html");
+  const links = [...doc.querySelectorAll("a")];
 
-  window.onscroll = function() {
-    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-      mybutton.style.display = "block";
-    } else {
-      mybutton.style.display = "none";
-    }
-  };
+  const pdfLinks = links
+    .map(a => a.getAttribute("href"))
+    .filter(href => href && href.toLowerCase().endsWith(".pdf"));
 
-  function topFunction() {
-    window.scrollTo({top: 0, behavior: 'smooth'});
+  const container = document.getElementById("pdf-list");
+  container.innerHTML = "";
+
+  if(pdfLinks.length === 0){
+    container.innerHTML = "No se han encontrado PDFs en esta carpeta.";
+  } else {
+    pdfLinks.forEach(pdf => {
+      const a = document.createElement("a");
+      a.href = pdf;
+      a.target = "_blank";
+      a.className = "pdf";
+      a.textContent = decodeURIComponent(pdf);
+      container.appendChild(a);
+    });
   }
+});
 </script>
 
 </body>
